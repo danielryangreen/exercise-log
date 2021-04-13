@@ -34,8 +34,19 @@ app.get("/api/workouts", (req, res) => {
 });
 
 app.post("/api/workouts", ({ body }, res) => {
-  db.Exercise.create(body)
-    .then(({ _id }) => db.Workout.findOneAndUpdate({}, { $push: { exercises: _id } }, { new: true }))
+  // db.Exercise.create(body)
+  //   .then(({ _id }) => db.Workout.findOneAndUpdate({}, { $push: { exercises: _id } }, { new: true }))
+  db.Workout.create(body)
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+app.put("/api/workouts/:id", (req, res) => {
+  db.Workout.updateOne({ _id: req.params.id }, { $push: { exercises: req.body } })
     .then(dbWorkout => {
       res.json(dbWorkout);
     })
